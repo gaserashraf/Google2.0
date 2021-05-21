@@ -1,13 +1,27 @@
-import React,{useState} from 'react'
+import React,{useState,useContext} from 'react'
 import logo from '../..//cover.png';
+import GoogleContext from "../../contexts/google/googleContext";
+import Suggest from './Suggest';
 const Header = () => {
-    const [search,setSearch] = useState("");
+    let googleContext = useContext(GoogleContext);
+    //const [search,setSearch] = useState("");
+   const search =googleContext.currSearch;
     const onChange = (e) => {
-       setSearch( e.target.value );
+      // setSearch( e.target.value );
+      googleContext.setCurrWord(e.target.value);
+      if(e.target.value.length)
+      {
+        googleContext.filterSuggest(e.target.value);
+      }
+      else{
+        googleContext.clearFilter();
+      }
     };
     const onSubmit = (e)=>{
         e.preventDefault();
         console.log(search);
+        googleContext.getResults(search);
+        googleContext.addSuggest(search); 
     }
     return (
       <div>
@@ -22,19 +36,23 @@ const Header = () => {
                 <img src={logo} className={"w-75"}></img>
               </div>
               <div className={"col-8 text-center"}>
-                <div className="input-group">
-                  <div className="input-group-prepend">
-                    <div className="input-group-text">
-                      <i className="fas fa-search"></i>
+
+                <div>
+                  <div className="input-group">
+                    <div className="input-group-prepend">
+                      <div className="input-group-text">
+                        <i className="fas fa-search"></i>
+                      </div>
                     </div>
+                    <input
+                      className={"form-control form-control-lg"}
+                      placeholder="Enter something to search"
+                      value={search}
+                      onChange={onChange}
+                    ></input>
                   </div>
-                  <input
-                    className={"form-control form-control-lg"}
-                    placeholder="Enter something to search"
-                    value={search}
-                    onChange={onChange}
-                  ></input>
                 </div>
+                <Suggest/>
               </div>
               <div className={"Col-2 justify-content-center"}>
                 <button type="submit" className="btn btn-lg px-4">

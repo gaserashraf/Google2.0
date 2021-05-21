@@ -13,3 +13,25 @@
 .box:hover{
     background-color: white;
 }
+.sugBox{
+    background-color: white;
+    box-shadow: 2px 2px 10px #888;
+    border-radius: 2%;
+    position: absolute;
+    width: 96%;
+    text-align: start;
+   
+}
+.sugBox p{
+    margin: 0;
+    padding:10px 50px ;
+    font-size: 22px;
+}
+.sugBox p:hover{
+    cursor: pointer;
+    background-color: #F9FAFB;
+}
+.sugBox hr{
+    margin: 0;
+   
+}
