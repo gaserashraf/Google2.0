@@ -79,6 +79,12 @@ public class InvertedIndex {
                             break;
                         }
                     }
+		    if(found==false)
+		    {
+			WordInfo wordInfo =new WordInfo(Doc.docIndex,type);
+			vec.add(wordInfo);
+			wordToDocumentMap.replace(temp, vec);
+		    }
                 }
             }
             // fill all normals
@@ -110,6 +116,12 @@ public class InvertedIndex {
                             break;
                         }
                     }
+	  	    if(found==false)
+		    {
+			WordInfo wordInfo =new WordInfo(Doc.docIndex,type1);
+			vec.add(wordInfo);
+			wordToDocumentMap.replace(temp, vec);
+		    }
                 }
             }
         }
