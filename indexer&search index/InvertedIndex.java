@@ -14,8 +14,9 @@ public class InvertedIndex {
         Vector<String> headings; // all headings of the Document
         Vector<String> paragrahs;// all normal text of the Document
         int docIndex; // the index of this doc, ex doc 1, doc 2
-        public DocumentClass()
+        public DocumentClass(int idx)
         {
+            docIndex=idx;
             headings = new Vector<String>();
             paragrahs = new Vector<String>();
         }
@@ -149,7 +150,7 @@ public class InvertedIndex {
             try{
                 String url="jdbc:mysql://localhost:3306/searchindex";
                 String user="root";
-                String password="12345678";
+                String password="gaser011100";
                 // 1. Get a connection to the database 
                 Connection myCon = DriverManager.getConnection(url,user,password );
                 // 2. Create a statement
@@ -192,7 +193,7 @@ public class InvertedIndex {
             try{
                 String url="jdbc:mysql://localhost:3306/searchindex";
                 String user="root";
-                String password="12345678";
+                String password="gaser011100";
                 Connection myCon = DriverManager.getConnection(url,user,password );
                 String sql="SELECT * FROM searchindex.words;";
                 PreparedStatement myStat = myCon.prepareStatement(sql);
@@ -239,7 +240,7 @@ public class InvertedIndex {
             try{
                 String url="jdbc:mysql://localhost:3306/searchindex";
                 String user="root";
-                String password="12345678";
+                String password="gaser011100";
                 // 1. Get a connection to the database 
                 Connection myCon = DriverManager.getConnection(url,user,password );
                 // 2. Create a statement
@@ -264,7 +265,7 @@ public class InvertedIndex {
             try{
                 String url="jdbc:mysql://localhost:3306/searchindex";
                 String user="root";
-                String password="12345678";
+                String password="gaser011100";
                 // 1. Get a connection to the database 
                 Connection myCon = DriverManager.getConnection(url,user,password );
                 // 2. Create a statement
@@ -282,11 +283,11 @@ public class InvertedIndex {
             clearDocsInfo();
         }
     }
-    static DocumentClass htmlTODoc(String html)
+    static DocumentClass htmlTODoc(String html,int idx)
    {
        // this function take an html document like this "<html><head><title>Sample Title</title></head>"
        // and convert it to an document class which impemeted ???
-      DocumentClass D = new DocumentClass();
+      DocumentClass D = new DocumentClass(idx);
       Document document = Jsoup.parse(html);
       //D.title=document.title(); // get title
       String [] HTMLElements = new String[] {"h1","h2","h3","h4","h5","h6","p","em","b","i","u","a"};
@@ -308,9 +309,9 @@ public class InvertedIndex {
       }
       return D;
    }
-    static DocumentClass htmlLinkTODoc(String Link) throws IOException
+    static DocumentClass htmlLinkTODoc(String Link,int idx) throws IOException
    {
-      DocumentClass D = new DocumentClass();
+      DocumentClass D = new DocumentClass(idx);
       Document document = Jsoup.connect(Link).get();
       // 1.Get the title and the description and store it
       //D.title=document.title(); //no need to store it here
@@ -337,12 +338,15 @@ public class InvertedIndex {
     
     static void test() throws IOException
     {
+        
         indexer idx = new indexer();
         //DocumentClass d1 = htmlLinkTODoc("https://stackoverflow.com/questions/12526979/jsoup-get-all-links-from-a-page#");
-        DocumentClass d1 = htmlLinkTODoc("https://mobirise.com/website-templates/sample-website-templates/");
+        DocumentClass d1 = htmlLinkTODoc("https://mobirise.com/website-templates/sample-website-templates/",0);
+        DocumentClass d2 = htmlLinkTODoc("https://codeforces.com/",1);
         //idx.restoreCurrIndex();
         idx.indexDoc(d1);
-        //idx.print();
+        idx.indexDoc(d2);
+        idx.print();
         idx.storeCurrIndex();
         //idx.clearSearchIndex();
     }
