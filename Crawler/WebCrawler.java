@@ -14,7 +14,7 @@ public class WebCrawler implements Runnable {
     private int threadsNum;
     public HashMap<String, Integer> visited_links = new HashMap<String, Integer>();
     private LinkedList<String> list = new LinkedList<String>();
-    private static final int MAX_NUM = 1040;
+    private static final int MAX_NUM = 1000;
     private Thread[] myThread;
     public int counter = 0;
     private BufferedWriter listWriter;
@@ -25,14 +25,13 @@ public class WebCrawler implements Runnable {
     public WebCrawler(int Threads_num) {
         threadsNum = Threads_num;
         // adding the crawler seed
-        if(init()) {
-            list.addLast("https://www.wikipedia.org/");
-            list.addLast("https://www.youm7.com/");
-            list.addLast("javatpoint.com");
-        }
+        list.addLast("https://www.wikipedia.org/");
+        list.addLast("https://www.youm7.com/");
+        list.addLast("javatpoint.com");
+
 
         try {
-            docsWriter = new BufferedWriter(new FileWriter("C:\\Users\\pc\\Desktop\\file\\Document.txt"));
+            docsWriter = new BufferedWriter(new FileWriter("C:\\Users\\pc\\Desktop\\file\\links.txt"));
         } catch (IOException e) {
             System.out.println("error in file path");
         }
@@ -48,7 +47,7 @@ public class WebCrawler implements Runnable {
 
     }
 
-    private boolean init() {
+    /*private boolean init() {
         File obj = new File("C:\\Users\\pc\\Desktop\\file\\Document.txt");
         try {
             String data;
@@ -80,7 +79,7 @@ public class WebCrawler implements Runnable {
             return false;
 
 
-    }
+    }*/
 
 
     @Override
@@ -88,10 +87,10 @@ public class WebCrawler implements Runnable {
         crawl();
     }
 
-    public void interrupt() {
+   /* public void interrupt() {
         for (int i = 0; i < this.threadsNum; i++)
             myThread[i].interrupt();
-    }
+    }*/
 
     public void begin() {
         for (int i = 0; i < this.threadsNum; i++)
@@ -122,7 +121,7 @@ public class WebCrawler implements Runnable {
             e.printStackTrace();
         }
 
-        Iterator iterator = list.iterator();
+       /* Iterator iterator = list.iterator();
         while (iterator.hasNext()) {
             try {
                 listWriter.write((String) iterator.next() + "\n");
@@ -134,7 +133,7 @@ public class WebCrawler implements Runnable {
             listWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 
@@ -149,8 +148,8 @@ public class WebCrawler implements Runnable {
                     return;
             }
 
-            if (Thread.currentThread().isInterrupted())
-                return;
+            /*if (Thread.currentThread().isInterrupted())
+                return;*/
 
             Document doc = request(next_link);
             if (doc != null) {
