@@ -28,10 +28,3 @@ word VARCHAR(500),
 PRIMARY KEY(word)
 );
 
-SELECT link
-FROM docLink
-JOIN wordDocs
-ON docLink.docIndex=wordDocs.docIndex
-WHERE word='and'
-;
-

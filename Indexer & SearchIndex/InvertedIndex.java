@@ -162,7 +162,7 @@ public class InvertedIndex {
                    String word = (String)mentry.getKey();
                    Vector<WordInfo>vec=(Vector)mentry.getValue();
                    int df =  vec.size();
-                   //String sql="INSERT INTO words (word , df) VALUES('"+word+"',"+df+")";
+                   ////String sql="INSERT INTO words (word , df) VALUES('"+word+"',"+df+")";
                    String sql="INSERT INTO words (word , df) VALUES(?,?)";
                    PreparedStatement myStat = myCon.prepareStatement(sql);
                    myStat.setString(1, word);
@@ -171,7 +171,7 @@ public class InvertedIndex {
                    for(int i = 0;i < vec.size();i++)
                    {
                        WordInfo wordInfo =vec.get(i);
-                       //sql="INSERT INTO wordDocs (word , docIndex, tf, type ) VALUES('"+word+"',"+wordInfo.docIndex+ ","+wordInfo.TF+",'"+wordInfo.type+"')";
+                       ////sql="INSERT INTO wordDocs (word , docIndex, tf, type ) VALUES('"+word+"',"+wordInfo.docIndex+ ","+wordInfo.TF+",'"+wordInfo.type+"')";
                        sql="INSERT INTO wordDocs (word , docIndex, tf, type ) VALUES(?,?,?,?)";
                        myStat = myCon.prepareStatement(sql);
                        myStat.setString(1, word);
@@ -341,10 +341,10 @@ public class InvertedIndex {
         
         indexer idx = new indexer();
         //DocumentClass d1 = htmlLinkTODoc("https://stackoverflow.com/questions/12526979/jsoup-get-all-links-from-a-page#");
-        DocumentClass d1 = htmlLinkTODoc("https://mobirise.com/website-templates/sample-website-templates/",0);
+        //DocumentClass d1 = htmlLinkTODoc("https://mobirise.com/website-templates/sample-website-templates/",0);
         DocumentClass d2 = htmlLinkTODoc("https://codeforces.com/",1);
         //idx.restoreCurrIndex();
-        idx.indexDoc(d1);
+       // idx.indexDoc(d1);
         idx.indexDoc(d2);
         idx.print();
         idx.storeCurrIndex();
