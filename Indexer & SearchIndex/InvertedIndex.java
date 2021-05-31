@@ -1,3 +1,7 @@
+import java.util.Scanner;
+import java.io.File; 
+import java.io.FileReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*; 
 import org.jsoup.Jsoup;
@@ -150,7 +154,7 @@ public class InvertedIndex {
             try{
                 String url="jdbc:mysql://localhost:3306/searchindex";
                 String user="root";
-                String password="gaser011100";
+                String password="12345678";
                 // 1. Get a connection to the database 
                 Connection myCon = DriverManager.getConnection(url,user,password );
                 // 2. Create a statement
@@ -193,7 +197,7 @@ public class InvertedIndex {
             try{
                 String url="jdbc:mysql://localhost:3306/searchindex";
                 String user="root";
-                String password="gaser011100";
+                String password="12345678";
                 Connection myCon = DriverManager.getConnection(url,user,password );
                 String sql="SELECT * FROM searchindex.words;";
                 PreparedStatement myStat = myCon.prepareStatement(sql);
@@ -240,7 +244,7 @@ public class InvertedIndex {
             try{
                 String url="jdbc:mysql://localhost:3306/searchindex";
                 String user="root";
-                String password="gaser011100";
+                String password="12345678";
                 // 1. Get a connection to the database 
                 Connection myCon = DriverManager.getConnection(url,user,password );
                 // 2. Create a statement
@@ -255,17 +259,33 @@ public class InvertedIndex {
                 ex.printStackTrace();
             }
         }
-        //* TODO
-        void storeDocInfo(){
-            // 1. Check if the doc is already in the database
-            // 2. if not, store its information with new docIndex
-            /*String description = document.select("meta[name=description]").get(0).attr("content");*/
+        void storeDocInfo( String link , int docIndex ){
+            try {
+            String url="jdbc:mysql://localhost:3306/searchindex";
+            String user="root";
+            String password="12345678";
+            Document document = Jsoup.connect(link).get();
+            String title=document.title();
+            String description = document.select("meta[name=description]").get(0).attr("content");
+            Connection myCon = DriverManager.getConnection(url,user,password );
+            String sql="INSERT INTO docLink (link , docIndex, title, description) VALUES(?,?,?,?)";
+            PreparedStatement myStat = myCon.prepareStatement(sql);
+            myStat.setString(1, link);
+            myStat.setInt(2, docIndex);
+            myStat.setString(3, title);
+            myStat.setString(4, description);
+            myStat.executeUpdate();
+            myStat.close();
+            myCon.close();
+            }catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
         void clearDocsInfo(){
             try{
                 String url="jdbc:mysql://localhost:3306/searchindex";
                 String user="root";
-                String password="gaser011100";
+                String password="12345678";
                 // 1. Get a connection to the database 
                 Connection myCon = DriverManager.getConnection(url,user,password );
                 // 2. Create a statement
@@ -295,9 +315,12 @@ public class InvertedIndex {
         Elements elements = document.getElementsByTag(HTMLElements[i]);
         for (Element element : elements) {
             String text = element.text();
+            text = text.replaceAll("[^a-zA-Z]", " ");  //remove all the special characters and numbers
             String[] words = text.split("\\s");//splits the string based on whitespace 
             for(String word:words){  
                 word=word.toLowerCase();
+                word=word.replaceAll(" ", "");
+                if(word=="") continue;
                 if(element.equals("h1")||element.equals("h2")||element.equals("h3")||element.equals("h4")||element.equals("h5")||element.equals("h6")){
                    //*Stem the word before storing it 
                     D.headings.add(word); 
@@ -321,9 +344,12 @@ public class InvertedIndex {
         Elements elements = document.getElementsByTag(HTMLElements[i]);
         for (Element element : elements) {
             String text = element.text();
+            text = text.replaceAll("[^a-zA-Z]", " ");  //remove all the special characters and numbers
             String[] words = text.split("\\s");//splits the string based on whitespace 
             for(String word:words){  
                 word=word.toLowerCase();
+                word=word.replaceAll(" ", "");
+                if(word=="") continue;
                 if(element.equals("h1")||element.equals("h2")||element.equals("h3")||element.equals("h4")||element.equals("h5")||element.equals("h6")){
                    //*Stem the word brfore storing it 
                     D.headings.add(word); 
@@ -335,22 +361,45 @@ public class InvertedIndex {
       }
       return D;
    }
-    
+   static void indexCurrLinks() throws IOException
+   {
+       try {
+           int docIndex = 0;
+           indexer idx = new indexer();
+           Scanner myReader = new Scanner(new File("links.txt"));
+           while (myReader.hasNextLine()) {
+             String link = myReader.nextLine();
+             // 1. store the document info and index to the database
+             idx.storeDocInfo(link,docIndex);
+             // 2. Convert the html page to our document data structure then index it 
+             idx.indexDoc( htmlLinkTODoc(link,docIndex));
+             docIndex++;
+           }
+           myReader.close();
+           idx.storeCurrIndex(); // Store the current searchIndex  
+         } catch (FileNotFoundException e) {
+           System.out.println("An error occurred.");
+           e.printStackTrace();
+         }
+   }
+
     static void test() throws IOException
     {
         
         indexer idx = new indexer();
         //DocumentClass d1 = htmlLinkTODoc("https://stackoverflow.com/questions/12526979/jsoup-get-all-links-from-a-page#");
         //DocumentClass d1 = htmlLinkTODoc("https://mobirise.com/website-templates/sample-website-templates/",0);
-        DocumentClass d2 = htmlLinkTODoc("https://codeforces.com/",1);
+        //idx.storeDocInfo("https://codeforces.com/",4);
         //idx.restoreCurrIndex();
-       // idx.indexDoc(d1);
-        idx.indexDoc(d2);
-        idx.print();
-        idx.storeCurrIndex();
-        //idx.clearSearchIndex();
+        //idx.indexDoc(d1);
+        //idx.indexDoc(htmlLinkTODoc("https://codeforces.com/",4));
+        //idx.print();
+        //idx.storeCurrIndex();
+        idx.clearSearchIndex();
+        idx.clearDocsInfo();
     }
     public static void main(String args[]) throws IOException {
-        test();
+        //test();
+        indexCurrLinks();
     }
 }
