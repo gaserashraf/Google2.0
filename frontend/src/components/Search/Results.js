@@ -10,8 +10,9 @@ const Results = () => {
         <div className='results'>
              <p>Found {resultsArr.length} results</p>
              <hr></hr>
+             
              {resultsArr.map(result =>(
-                <ResultItem key={result.id} result={result} />
+                <ResultItem key={result.link} result={result} />
              ))} 
         </div>
     )

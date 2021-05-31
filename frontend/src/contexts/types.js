@@ -1,4 +1,5 @@
 export const SEARCH_NEW = 'SEARCH_NEW';
+export const CLEARS_SEARCH = 'CLEARS_SEARCH';
 export const CLEAR_SEARCH = 'CLEARS_SEARCH';
 export const ADD_SUGGEST = 'ADD_SUGGEST';
 export const LOAD_SUGGEST = 'LOAD_SUGGEST';

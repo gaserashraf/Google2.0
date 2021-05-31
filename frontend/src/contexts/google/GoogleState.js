@@ -25,9 +25,9 @@ const GoogleState = (props) =>{
     const goSearch = (keyWord)=>
     {
         getResults(keyWord);
-        addSuggest(keyWord);
+        //addSuggest(keyWord);
     }
-    const getResults = (keyWord)=>
+    const getResults = async(keyWord)=>
     {
         //logic:
         /*
@@ -35,7 +35,7 @@ const GoogleState = (props) =>{
         */
 
         // TO DO send a request and get the results
-        const arrRes=[
+       /* const arrRes=[
             {
                 id :'1',
                 link:'www.google.com',
@@ -54,26 +54,51 @@ const GoogleState = (props) =>{
                 title:'Google',
                 dis:'A, or a, is the first letter and the first vowel letter of the modern English alphabet and the ISO basic Latin alphabet. ... Its name in English is a (pronounced /ˈeɪ/), ...'
             }
-        ]
-        dispatch({ type: SEARCH_NEW, payload: arrRes });
+        ]*/
+        
+        try {
+            const res = await axios.get(
+                `http://localhost:5000/${keyWord}`
+                );
+            console.log(res.data);
+            if(res.data!="Not Found")
+            {
+                dispatch({ type: SEARCH_NEW, payload: res.data });
+            }
+        } catch (error) {
+            console.log(error);   
+        }
+       
 
     }
     const addSuggest = (keyWord)=>
     {
         //logic:
-        /*
-        add to the database the keyword of this user he search on it
-        */
+        //add to the database the keyword of this user he search on it
+        
         dispatch({ type: ADD_SUGGEST, payload: keyWord });
     }
-    const loadSuggest = ()=>
+    const loadSuggest = async()=>
     {
         //logic:
         /*
         get from the database all suggests and put it on allSuggestsArray
         */
-       const sug = ["sug1","sug2","sug3"];
-       dispatch({ type: LOAD_SUGGEST, payload: sug });
+        try {
+            const res = await axios.get(
+                `http://localhost:5000`
+                );
+            console.log(res.data);
+            let arr=[];
+            res.data.forEach(t => {
+                arr.push(t.word);
+            });
+            dispatch({ type: LOAD_SUGGEST, payload: arr });
+        } catch (error) {
+            console.log(error);   
+        }
+      // const sug = ["sug1","sug2","sug3"];
+      
 
     }
     const filterSuggest = (keyWord)=>
@@ -90,6 +115,10 @@ const GoogleState = (props) =>{
     }
     const setCurrWord=(str)=>{
         dispatch({ type: SET_SEARCH, payload: str });
+        filterSuggest(str);
+    }
+    const clearSearch = ()=>{
+        dispatch({ type: CLEARS_SEARCH });
     }
     return (
       <GoogleContext.Provider value={{
@@ -102,7 +131,8 @@ const GoogleState = (props) =>{
         addSuggest,
         setCurrWord,
         filterSuggest,
-        clearFilter
+        clearFilter,
+        clearSearch
       }}
       >
         {props.children}

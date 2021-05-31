@@ -19,9 +19,15 @@ const Header = () => {
     };
     const onSubmit = (e)=>{
         e.preventDefault();
-        console.log(search);
-        googleContext.getResults(search);
-        googleContext.addSuggest(search); 
+        if(search.length)
+        {
+          console.log(search);
+          googleContext.getResults(search);
+          //googleContext.addSuggest(search); 
+        }
+    }
+    const clearSearch = ()=>{
+      googleContext.clearSearch()
     }
     return (
       <div>
@@ -35,7 +41,7 @@ const Header = () => {
               >
                 <img src={logo} className={"w-75"}></img>
               </div>
-              <div className={"col-8 text-center"}>
+              <div className={"col-7 text-center"}>
 
                 <div>
                   <div className="input-group">
@@ -57,6 +63,9 @@ const Header = () => {
               <div className={"Col-2 justify-content-center"}>
                 <button type="submit" className="btn btn-lg px-4">
                   Search
+                </button>
+                <button type="reset" onClick={clearSearch} className="ml-2 btn btn-lg px-4">
+                  Clear
                 </button>
               </div>
             </div>

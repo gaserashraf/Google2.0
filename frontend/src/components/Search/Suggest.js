@@ -7,6 +7,7 @@ const Suggest = () => {
         //console.log(props);
        // clickSugg(e.target.textContent);
        googleContext.setCurrWord(e.target.textContent);
+       googleContext.clearFilter();
       }
     useEffect(() => {
         googleContext.loadSuggest();

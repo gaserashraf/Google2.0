@@ -30,8 +30,9 @@ export default (state, action) => {
             ...state,
             // TO DO filter it
             suggestsArray : state.allSuggestsArray.filter(str=>{
-              const regex = new RegExp(`${action.payload}`,'gi'); 
-              return  str.match(regex);
+                let tmp = str;
+                const regex = new RegExp(`${action.payload}`,'gi'); 
+                return  tmp.match(regex);
             })
         };
     case CLEAR_FILTER:
@@ -43,6 +44,13 @@ export default (state, action) => {
         return{
             ...state,
             currSearch: action.payload
+        }
+    case CLEARS_SEARCH:
+        return{
+            ...state,
+            currSearch:"",
+            searchResults:[],
+            suggestsArray:[]
         }
     default:
       return state;

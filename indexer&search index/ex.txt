@@ -1,0 +1,21 @@
+“hello everyone, ” 
+“this article is based on inverted index, ”
+“which is hashmap like data structure”.
+ hello      df=1          1
+ everyone   df=1          1
+ this       df=1          1
+ article    df=1          1
+ is         df=2          2, 3
+ based      df=1          2
+ on         df=1          2
+ inverted   df=1          2
+ index      df=1          2
+ which      df=1          2
+ hashmap    df=1          2
+ like       df=1          2
+ data       df=1          2
+ structure  df=1          2
+
+df=document frequency // how much docs are there?
+tf=term freqency // in each doc how much are there
+normal h1 h2 h3
