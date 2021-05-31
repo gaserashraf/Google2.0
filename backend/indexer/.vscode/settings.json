@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "f:\\SecondYear\\SecondSemester\\Advanced Programming Techniques\\Project\\Helpers\\jsoup-1.13.1.jar",
+        "f:\\SecondYear\\SecondSemester\\Advanced Programming Techniques\\Project\\Helpers\\mysql-connector-java-8.0.25\\mysql-connector-java-8.0.25.jar"
+    ]
+}

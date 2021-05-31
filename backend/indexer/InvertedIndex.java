@@ -10,7 +10,7 @@ public class InvertedIndex {
 
     static class DocumentClass
     {
-        String title; // title of the Document
+        //String title; // title of the Document //No need of it 
         Vector<String> headings; // all headings of the Document
         Vector<String> paragrahs;// all normal text of the Document
         int docIndex; // the index of this doc, ex doc 1, doc 2
@@ -223,7 +223,7 @@ public class InvertedIndex {
             restoreCurrIndex();
             clearDatabase();
         }
-        void clearDatabase(){
+        void clearSearchIndex(){
             try{
                 String url="jdbc:mysql://localhost:3306/searchindex";
                 String user="root";
@@ -242,6 +242,33 @@ public class InvertedIndex {
                 ex.printStackTrace();
             }
         }
+        //* TODO
+        void storeDocInfo(){
+            // 1. Check if the doc is already in the database
+            // 2. if not, store its information with new docIndex
+            /*String description = document.select("meta[name=description]").get(0).attr("content");*/
+        }
+        void clearDocsInfo(){
+            try{
+                String url="jdbc:mysql://localhost:3306/searchindex";
+                String user="root";
+                String password="12345678";
+                // 1. Get a connection to the database 
+                Connection myCon = DriverManager.getConnection(url,user,password );
+                // 2. Create a statement
+                Statement myStat = myCon.createStatement();
+                // 3. execute query
+                String sql="DELETE FROM docLink";
+                myStat.execute(sql);
+                myStat.close();
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
+        }
+        void clearDatabase(){
+            clearSearchIndex();
+            clearDocsInfo();
+        }
     }
     static DocumentClass htmlTODoc(String html)
    {
@@ -249,7 +276,7 @@ public class InvertedIndex {
        // and convert it to an document class which impemeted ???
       DocumentClass D = new DocumentClass();
       Document document = Jsoup.parse(html);
-      D.title=document.title(); // get title
+      //D.title=document.title(); // get title
       String [] HTMLElements = new String[] {"h1","h2","h3","h4","h5","h6","p","em","b","i","u","a"};
       for(int i = 0; i<HTMLElements.length;i++){
         Elements elements = document.getElementsByTag(HTMLElements[i]);
@@ -271,10 +298,11 @@ public class InvertedIndex {
    }
     static DocumentClass htmlLinkTODoc(String Link) throws IOException
    {
-       //this function like the funntion ??? ?????  but take the link of the document
       DocumentClass D = new DocumentClass();
       Document document = Jsoup.connect(Link).get();
-      D.title=document.title();
+      // 1.Get the title and the description and store it
+      //D.title=document.title(); //no need to store it here
+      //D.description=document.description();
       String [] HTMLElements = new String[] {"h1","h2","h3","h4","h5","h6","p","em","b","i","u","a"};
       for(int i = 0; i<HTMLElements.length;i++){
         Elements elements = document.getElementsByTag(HTMLElements[i]);
@@ -294,16 +322,17 @@ public class InvertedIndex {
       }
       return D;
    }
+    
     static void test() throws IOException
     {
         indexer idx = new indexer();
         //DocumentClass d1 = htmlLinkTODoc("https://stackoverflow.com/questions/12526979/jsoup-get-all-links-from-a-page#");
         DocumentClass d1 = htmlLinkTODoc("https://mobirise.com/website-templates/sample-website-templates/");
-        idx.restoreCurrIndex();
-        //idx.indexDoc(d1);
-        idx.print();
-        //idx.storeCurrIndex();
-        //idx.clearDatabase();
+        //idx.restoreCurrIndex();
+        idx.indexDoc(d1);
+        //idx.print();
+        idx.storeCurrIndex();
+        //idx.clearSearchIndex();
     }
     public static void main(String args[]) throws IOException {
         test();

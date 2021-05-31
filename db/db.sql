@@ -19,6 +19,10 @@ link VARCHAR(500),
 docIndex INT, 
 PRIMARY KEY(docIndex)
 );
+ALTER TABLE doclink 
+ADD title VARCHAR(100),
+ADD description VARCHAR(500);
+
 CREATE TABLE searchWords (
 word VARCHAR(500), 
 PRIMARY KEY(word)
