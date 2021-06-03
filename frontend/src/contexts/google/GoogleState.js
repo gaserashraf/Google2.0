@@ -10,14 +10,19 @@ import {
     LOAD_SUGGEST,
     SET_SEARCH,
     FILTER_SUGGEST,
-    CLEAR_FILTER
+    CLEAR_FILTER,
+    SET_CURRENT_PAGE,
+    SET_PAGE_SEARCH_RESULT
 } from "../types";
 const GoogleState = (props) =>{
     const initialState = {
         searchResults :[],
+        pageSearchResult:[],
         suggestsArray :[], // acutal suggests array will change it once use type
         allSuggestsArray :[],// all suggest we store it in database
-        currSearch:"" // the keyword the use type it
+        currSearch:"",// the keyword the use type it
+        currentPage:1,
+        postsPerPage:10
     }
     const [state,dispatch] = useReducer(GoogleReducer,initialState);
 
@@ -64,7 +69,9 @@ const GoogleState = (props) =>{
             if(res.data!="Not Found")
             {
                 dispatch({ type: SEARCH_NEW, payload: res.data });
+                setCurrentPage(1);
             }
+
         } catch (error) {
             console.log(error);   
         }
@@ -120,19 +127,31 @@ const GoogleState = (props) =>{
     const clearSearch = ()=>{
         dispatch({ type: CLEARS_SEARCH });
     }
+
+    // pagination functions
+    const setCurrentPage = (pageNum)=>{
+        // the current page
+        //console.log("ana hna 5 "+pageNum);
+        dispatch({ type: SET_CURRENT_PAGE , payload:pageNum});
+    }
+    
     return (
       <GoogleContext.Provider value={{
         searchResults:state.searchResults,
         suggestsArray:state.suggestsArray,
         allSuggestsArray:state.allSuggestsArray,
         currSearch:state.currSearch,
+        pageSearchResult:state.pageSearchResult,
+        currentPage:state.currentPage,
+        postsPerPage:state.postsPerPage,
         getResults,
         loadSuggest,
         addSuggest,
         setCurrWord,
         filterSuggest,
         clearFilter,
-        clearSearch
+        clearSearch,
+        setCurrentPage
       }}
       >
         {props.children}

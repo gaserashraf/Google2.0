@@ -1,3 +1,4 @@
+import { act } from "react-dom/test-utils";
 import {
     SEARCH_NEW,
     CLEARS_SEARCH,
@@ -5,7 +6,9 @@ import {
     LOAD_SUGGEST,
     SET_SEARCH,
     FILTER_SUGGEST,
-    CLEAR_FILTER
+    CLEAR_FILTER,
+    SET_CURRENT_PAGE,
+    SET_PAGE_SEARCH_RESULT
 } from "../types";
 
 export default (state, action) => {
@@ -50,7 +53,15 @@ export default (state, action) => {
             ...state,
             currSearch:"",
             searchResults:[],
-            suggestsArray:[]
+            suggestsArray:[],
+            pageSearchResult:[],
+            currentPage:1
+        }
+    case SET_CURRENT_PAGE:
+        return{
+            ...state,
+            currentPage:action.payload,
+            pageSearchResult:state.searchResults.slice(action.payload * state.postsPerPage -  state.postsPerPage, action.payload * state.postsPerPage)
         }
     default:
       return state;

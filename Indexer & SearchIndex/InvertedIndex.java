@@ -51,9 +51,24 @@ public class InvertedIndex {
     static class indexer
     {
         HashMap<String, Vector<WordInfo>> wordToDocumentMap;
+        HashMap<String, Integer> stopWords;
         indexer()
         { 
            wordToDocumentMap = new HashMap<String, Vector<WordInfo>>(); 
+
+           // add all stop words
+            stopWords = new HashMap<String, Integer>(); 
+            try {
+                Scanner myReader = new Scanner(new File("C:\\Users\\Lenovo\\Documents\\NetBeansProjects\\mavenproject1\\src\\main\\java\\stopWords.txt"));
+                while (myReader.hasNextLine()) {
+                  String word = myReader.nextLine();
+                  stopWords.put(word,1);
+                }
+                myReader.close();
+              } catch (FileNotFoundException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+              }
         }
         void indexDoc(DocumentClass Doc) // o(n^2)
         {
@@ -63,6 +78,11 @@ public class InvertedIndex {
             for(int i =0;i<Doc.headings.size();i++)
             {
                 String temp = Doc.headings.get(i);
+                if(stopWords.get(temp)!=null) continue; // the word is stop word , is about....
+                
+                /*Stemmer S1 = new Stemmer (temp); //stem words
+                S1.stem();
+                temp =S1.toString();*/
                 if(wordToDocumentMap.get(temp)==null) // first time this word
                 {
                     WordInfo wordInfo =new WordInfo(Doc.docIndex,type);
@@ -98,6 +118,11 @@ public class InvertedIndex {
             for(int i =0;i<Doc.paragrahs.size();i++)
             {
                 String temp = Doc.paragrahs.get(i);
+                if(stopWords.get(temp)!=null) continue; // the word is stop word , is about....
+                
+                /*Stemmer S1 = new Stemmer (temp); //stem words
+                S1.stem();
+                temp =S1.toString();*/
                 if(wordToDocumentMap.get(temp)==null) // first time this word
                 {
                     WordInfo wordInfo1 =new WordInfo(Doc.docIndex,type1);
@@ -298,6 +323,23 @@ public class InvertedIndex {
                 ex.printStackTrace();
             }
         }
+        void clearWordsSearch(){
+            try{
+                String url="jdbc:mysql://localhost:3306/searchindex";
+                String user="root";
+                String password="12345678";
+                // 1. Get a connection to the database 
+                Connection myCon = DriverManager.getConnection(url,user,password );
+                // 2. Create a statement
+                Statement myStat = myCon.createStatement();
+                // 3. execute query
+                String sql="DELETE FROM searchwords";
+                myStat.execute(sql);
+                myStat.close();
+            }catch(Exception ex){
+                ex.printStackTrace();
+            }
+        }
         void clearDatabase(){
             clearSearchIndex();
             clearDocsInfo();
@@ -366,7 +408,7 @@ public class InvertedIndex {
        try {
            int docIndex = 0;
            indexer idx = new indexer();
-           Scanner myReader = new Scanner(new File("links.txt"));
+           Scanner myReader = new Scanner(new File("C:\\Users\\Lenovo\\Documents\\NetBeansProjects\\mavenproject1\\src\\main\\java\\links.txt"));
            while (myReader.hasNextLine()) {
              String link = myReader.nextLine();
              // 1. store the document info and index to the database
@@ -397,6 +439,7 @@ public class InvertedIndex {
         //idx.storeCurrIndex();
         idx.clearSearchIndex();
         idx.clearDocsInfo();
+        idx.clearWordsSearch();
     }
     public static void main(String args[]) throws IOException {
         //test();

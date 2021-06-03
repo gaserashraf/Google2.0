@@ -5,14 +5,13 @@ import GoogleContext from "../../contexts/google/googleContext";
 const Results = () => {
     let googleContext = useContext(GoogleContext);
     const resultsArr=googleContext.searchResults;
-     
+    console.log(googleContext.pageSearchResult);
     return (
         <div className='results'>
              <p>Found {resultsArr.length} results</p>
              <hr></hr>
-             
-             {resultsArr.map(result =>(
-                <ResultItem key={result.link} result={result} />
+             {googleContext.pageSearchResult.map(result =>(
+                <ResultItem result={result} />
              ))} 
         </div>
     )

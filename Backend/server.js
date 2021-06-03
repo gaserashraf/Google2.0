@@ -12,7 +12,7 @@ app.listen(5000, () => {
 let myConnention = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "gaser011100",
+    password: "12345678",
     database: "searchindex",
     multipleStatements: true
 });
