@@ -17,21 +17,21 @@ FOREIGN KEY (docIndex) REFERENCES docLink (docIndex)
 CREATE TABLE docLink (
 link VARCHAR(500), 
 docIndex INT, 
+title VARCHAR(100),
+description VARCHAR(500),
 PRIMARY KEY(docIndex)
 );
-ALTER TABLE doclink 
-ADD title VARCHAR(100),
-ADD description VARCHAR(500);
 
 CREATE TABLE searchWords (
 word VARCHAR(500), 
 PRIMARY KEY(word)
 );
 
+/*
 SELECT link
 FROM docLink
 JOIN wordDocs
 ON docLink.docIndex=wordDocs.docIndex
 WHERE word='and'
 ;
-
+*/
